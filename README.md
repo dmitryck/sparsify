@@ -1,24 +1,20 @@
 # Sparsify
 
-TODO: Write a gem description
-
-## Installation
-
-Add this line to your application's Gemfile:
-
-    gem 'sparsify'
-
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
-
-    $ gem install sparsify
+Convert a deeply-nested hash into a shallow sparse hash. Useful for tools that
+either can't handle deeply-nested hashes or that allow partial updates via
+sparse hashes.
 
 ## Usage
 
-TODO: Write usage instructions here
+```ruby
+require 'sparsify'
+
+Sparsify({'foo' => { 'bar' => {'baz'=>'bingo'}}})
+#=> {'foo.bar.baz' => 'bingo'}
+
+Unsparsify({'foo.bar.baz' => 'bingo'})
+#=> {'foo' => { 'bar' => {'baz'=>'bingo'}}}
+```
 
 ## Contributing
 
