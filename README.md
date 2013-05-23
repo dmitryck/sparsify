@@ -9,11 +9,23 @@ sparse hashes.
 ```ruby
 require 'sparsify'
 
-Sparsify({'foo' => { 'bar' => {'baz'=>'bingo'}}})
+Sparsify({'foo' => { 'bar' => {'baz' => 'bingo'}}})
 #=> {'foo.bar.baz' => 'bingo'}
 
 Unsparsify({'foo.bar.baz' => 'bingo'})
-#=> {'foo' => { 'bar' => {'baz'=>'bingo'}}}
+#=> {'foo' => { 'bar' => {'baz' => 'bingo'}}}
+```
+
+### Advanced Usage
+
+```ruby
+require 'sparsify'
+
+Sparsify({'foo' => { 'bar.bar' => {'baz' => 'bingo'}}}, separator: '|')
+#=> {'foo|bar.bar|baz' => 'bingo'}
+
+Unsparsify({'foo|bar.bar|baz' => 'bingo'}, separator: '|')
+#=> {'foo' => { 'bar.bar' => {'baz' => 'bingo'}}}
 ```
 
 ## Contributing
