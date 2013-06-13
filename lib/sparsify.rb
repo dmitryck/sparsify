@@ -26,7 +26,7 @@ module Sparsify
 
     self.each_with_object(Hash.new) do |(partial_key, value), memo|
       key = ([inherited_prefix, partial_key.to_s].compact.join(separator))
-      if value.kind_of? Hash
+      if value.kind_of?(Hash) && !value.empty?
         memo.update Sparsify(value, options.merge(prefix: key))
       else
         memo[key] = value

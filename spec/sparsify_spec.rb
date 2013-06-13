@@ -3,11 +3,14 @@ require 'sparsify'
 
 describe 'Sparsify' do
   let(:source_hash) do
-    {'foo' => { 'bar' => {'baz'=>'bingo'}}}
+    {'foo' => { 'bar' => {'baz'=>'bingo', 'whee'=> {}}}}
   end
 
   let(:intended_result) do
-    {'foo.bar.baz' => 'bingo'}
+    {
+      'foo.bar.baz' => 'bingo',
+      'foo.bar.whee' => {}
+    }
   end
 
   it 'should sparsify' do
