@@ -24,11 +24,14 @@ module Sparsify
 
       inherited_prefix = options.fetch(:prefix, nil)
       separator = options.fetch(:separator, DEFAULT_SEPARATOR)
+      sparse_array = options.fetch(:sparse_array, false)
 
       hsh.each do |partial_key, value|
         key = ([inherited_prefix, partial_key.to_s].compact.join(separator))
         if value.kind_of?(Hash) && !value.empty?
           sparse_each(value, options.merge(prefix: key), &block)
+        elsif sparse_array && value.kind_of?(Array) && !value.empty?
+          sparse_each(value.count.times.map(&:to_s).zip(value), options.merge(prefix: key), &block)
         else
           yield key, value
         end
@@ -56,9 +59,18 @@ module Sparsify
       sparse_each(hsh, options).with_object({}) do |(k, v), memo|
         current = memo
         key = k.to_s.split(separator)
-        current = (current[key.shift] ||= {}) until key.size <= 1
-        raise KeyError unless current.kind_of?(Hash)
-        current[key.first] = v
+        partial = key.shift
+        until key.size.zero?
+          up_next = key.shift
+          up_next = up_next.to_i if (up_next.to_i.to_s == up_next)
+          current = (current[partial] ||= (up_next.kind_of?(Integer) ? [] : {}))
+          case up_next
+          when Integer then raise KeyError unless current.kind_of?(Array)
+          else              raise KeyError unless current.kind_of?(Hash)
+          end
+          partial = up_next
+        end
+        current[up_next] = v
       end
     end
 
