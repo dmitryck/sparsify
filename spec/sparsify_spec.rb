@@ -24,6 +24,28 @@ describe 'Sparsify' do
     it { should == source_hash }
   end
 
+  context 'sparse_array' do
+    let(:source_hash) do
+      {'foo' => ['bar','baz',{'bingo'=>'baby'}]}
+    end
+    let(:intended_result) do
+      {
+        'foo.0' => 'bar',
+        'foo.1' => 'baz',
+        'foo.2.bingo' => 'baby'
+      }
+    end
+    it 'should sparsify' do
+      Sparsify(source_hash, sparse_array: true).should == intended_result
+    end
+    context 'round-trip' do
+      subject do
+        Unsparsify(Sparsify(source_hash, sparse_array: true), sparse_array: true)
+      end
+      it { should == source_hash }
+    end
+  end
+
   context '.sparse_each' do
     context 'when no block given' do
       let(:sparse_each_result) { Sparsify.sparse_each(source_hash) }

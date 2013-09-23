@@ -1,4 +1,4 @@
-# encoding: utf-
+# encoding: utf-8
 
 require 'sparsify/version'
 require 'sparsify/utility_methods'
