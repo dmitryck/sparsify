@@ -20,6 +20,9 @@ module Sparsify
   # @param options [Hash<Symbol,Object>]
   # @option options [String] :separator
   # @option options [String] :prefix
+  # @option options [Boolean,:zero_pad] :sparse_array (false)
+  #   truthy values will cause arrays to be sparsed by index and decended into.
+  #   :zero_pad causes indexes to be zero-padded to make them sort lexically.
   # @return [Hash<String,Object>]
   def sparse(options = {})
     Sparsify.sparse(self, options)

@@ -44,6 +44,29 @@ describe 'Sparsify' do
       end
       it { should == source_hash }
     end
+    context 'zero-pad' do
+      let(:source_hash) do
+        {'foo' => ['bar','baz',{'bingo'=>'baby'},'blip','blip','blip','blip','blip','blip','blip','blip']}
+      end
+      let(:intended_result) do
+        {
+          'foo.00' => 'bar',
+          'foo.01' => 'baz',
+          'foo.02.bingo' => 'baby',
+          'foo.03' => 'blip',
+          'foo.04' => 'blip',
+          'foo.05' => 'blip',
+          'foo.06' => 'blip',
+          'foo.07' => 'blip',
+          'foo.08' => 'blip',
+          'foo.09' => 'blip',
+          'foo.10' => 'blip',
+        }
+      end
+      it 'should sparsify' do
+        Sparsify(source_hash, sparse_array: :zero_pad).should == intended_result
+      end
+    end
   end
 
   context '.sparse_each' do
