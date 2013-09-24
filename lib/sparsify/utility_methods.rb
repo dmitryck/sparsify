@@ -31,7 +31,8 @@ module Sparsify
         if value.kind_of?(Hash) && !value.empty?
           sparse_each(value, options.merge(prefix: key), &block)
         elsif sparse_array && value.kind_of?(Array) && !value.empty?
-          sparse_each(value.count.times.map(&:to_s).zip(value), options.merge(prefix: key), &block)
+          zps = (sparse_array == :zero_pad ? "%0#{value.count.to_s.size}d" : '%d')# zero-pad string
+          sparse_each(value.count.times.map(&zps.method(:%)).zip(value), options.merge(prefix: key), &block)
         else
           yield key, value
         end
@@ -62,7 +63,7 @@ module Sparsify
         partial = key.shift
         until key.size.zero?
           up_next = key.shift
-          up_next = up_next.to_i if (up_next.to_i.to_s == up_next)
+          up_next = up_next.to_i if (up_next =~ /\A[0-9]+\Z/)
           current = (current[partial] ||= (up_next.kind_of?(Integer) ? [] : {}))
           case up_next
           when Integer then raise KeyError unless current.kind_of?(Array)
