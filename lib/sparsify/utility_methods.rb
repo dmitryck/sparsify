@@ -60,7 +60,7 @@ module Sparsify
       sparse_each(hsh, options).with_object({}) do |(k, v), memo|
         current = memo
         key = k.to_s.split(separator)
-        partial = key.shift
+        up_next = partial = key.shift
         until key.size.zero?
           up_next = key.shift
           up_next = up_next.to_i if (up_next =~ /\A[0-9]+\Z/)
