@@ -3,13 +3,14 @@ require 'sparsify'
 
 describe 'Sparsify' do
   let(:source_hash) do
-    {'foo' => { 'bar' => {'baz'=>'bingo', 'whee'=> {}}}}
+    {'foo' => { 'bar' => {'baz'=>'bingo', 'whee'=> {}}},'asdf'=>'qwer'}
   end
 
   let(:intended_result) do
     {
       'foo.bar.baz' => 'bingo',
-      'foo.bar.whee' => {}
+      'foo.bar.whee' => {},
+      'asdf' => 'qwer',
     }
   end
 
