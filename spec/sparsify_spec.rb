@@ -25,6 +25,33 @@ describe 'Sparsify' do
     it { should == source_hash }
   end
 
+  context 'escaping separator in keys' do
+    let(:nested_hash) do
+      {
+        'foo.foo' => 'foo',
+        'foo' => {'bar.bar' => 'bar'}
+      }
+    end
+    let(:sparse_hash) do
+      {
+        'foo\.foo' => 'foo',
+        'foo.bar\.bar' => 'bar'
+      }
+    end
+    context '#sparse' do
+      subject do
+        Sparsify(nested_hash)
+      end
+      it { should eq sparse_hash }
+    end
+    context '#unsparse' do
+      subject do
+        Unsparsify(sparse_hash)
+      end
+      it { should eq nested_hash }
+    end
+  end
+
   context 'sparse_array' do
     let(:source_hash) do
       {'foo' => ['bar','baz',{'bingo'=>'baby'}]}

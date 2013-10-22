@@ -27,7 +27,7 @@ module Sparsify
       sparse_array = options.fetch(:sparse_array, false)
 
       hsh.each do |partial_key, value|
-        key = ([inherited_prefix, partial_key.to_s].compact.join(separator))
+        key = escaped_join(inherited_prefix, partial_key.to_s, separator)
         if value.kind_of?(Hash) && !value.empty?
           sparse_each(value, options.merge(prefix: key), &block)
         elsif sparse_array && value.kind_of?(Array) && !value.empty?
@@ -57,9 +57,9 @@ module Sparsify
     # @return [Hash<String,Object>]
     def unsparse(hsh, options = {})
       separator = options.fetch(:separator, DEFAULT_SEPARATOR)
-      sparse_each(hsh, options).with_object({}) do |(k, v), memo|
+      hsh.each_with_object({}) do |(k, v), memo|
         current = memo
-        key = k.to_s.split(separator)
+        key = escaped_split(k, separator)
         up_next = partial = key.shift
         until key.size.zero?
           up_next = key.shift
@@ -101,7 +101,7 @@ module Sparsify
 
       separator = options.fetch(:separator, DEFAULT_SEPARATOR)
 
-      sparse_key.to_s.split(separator).reduce(hsh) do |memo, kp|
+      escaped_split(sparse_key, separator).reduce(hsh) do |memo, kp|
         if memo.kind_of?(Hash) and memo.has_key?(kp)
           memo.fetch(kp)
         elsif default
@@ -126,6 +126,51 @@ module Sparsify
     # @return [Object]
     def sparse_get(hsh, sparse_key, options = {})
       sparse_fetch(hsh, sparse_key, options) { nil }
+    end
+
+    private
+
+    # Utility method for backslash-escaping a string
+    # @param str [String]
+    # @param separator [String] single-character string
+    # @return [String]
+    def escape(str, separator)
+      pattern = /(\\|#{Regexp.escape(separator)})/
+      str.gsub(pattern, '\\\\\1')
+    end
+
+    # Utility method for removing backslash-escaping from a string
+    # @param str [String]
+    # @param separator [String] single-character string
+    # @return [String]
+    def unescape(str, separator)
+      pattern = /\\(\\|#{Regexp.escape(separator)})/
+      str.gsub(pattern, '\1')
+    end
+
+    # Utility method for splitting a string by a separator into
+    # non-escaped parts
+    # @param str [String]
+    # @param separator [String] single-character string
+    # @return [Array<String>]
+    def escaped_split(str, separator)
+      unescaped_separator = /(?<!\\)(#{Regexp.escape(separator)})/
+      # String#split(<Regexp>) on non zero-width matches yields the match
+      # as the even entries in the array.
+      parts = str.split(unescaped_separator).each_slice(2).map(&:first)
+      parts.map do |part|
+        unescape(part, separator)
+      end
+    end
+
+    # Utility method for joining a pre-escaped string with a not-yet escaped
+    # string on a given separator, escaping the new part before joining.
+    # @param pre_escaped_prefix [String]
+    # @param new_part [String] - will be escaped before joining
+    # @param separator [String] single-character string
+    # @return [String]
+    def escaped_join(pre_escaped_prefix, new_part, separator)
+      [pre_escaped_prefix, escape(new_part, separator)].compact.join(separator)
     end
   end
 
