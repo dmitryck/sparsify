@@ -1,4 +1,4 @@
 # encoding: utf-8
 module Sparsify
-  VERSION = '0.1.3'
+  VERSION = '1.0.0'
 end
