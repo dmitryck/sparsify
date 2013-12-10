@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
   spec.description   = 'Flattens deeply-nested hashes into sparse hashes'
   spec.summary       = 'Flattens deeply-nested hashes into sparse hashes'
   spec.homepage      = 'https://www.github.com/simplymeasured/sparsify'
-  spec.license       = 'NONE'
+  spec.license       = 'Apache 2'
 
   spec.files         = `git ls-files`.split($INPUT_RECORD_SEPARATOR)
   spec.executables   = spec.files.grep(/^bin\//) { |f| File.basename(f) }
