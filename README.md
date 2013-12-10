@@ -16,7 +16,9 @@ Unsparsify({'foo.bar.baz' => 'bingo'})
 #=> {'foo' => { 'bar' => {'baz' => 'bingo'}}}
 ```
 
-### Advanced Usage
+## Advanced Usage
+
+### Custom Separator
 
 ```ruby
 require 'sparsify'
@@ -26,6 +28,18 @@ Sparsify({'foo' => { 'bar.bar' => {'baz' => 'bingo'}}}, separator: '|')
 
 Unsparsify({'foo|bar.bar|baz' => 'bingo'}, separator: '|')
 #=> {'foo' => { 'bar.bar' => {'baz' => 'bingo'}}}
+```
+
+### Sparse Arrays
+
+``` ruby
+require 'sparsify'
+
+Sparsify({'foo' => ['bar','baz','buz']}, sparse_array: true)
+#=> {'foo.0'=>'bar','foo.1'=>'baz','foo.2'=>'buz'}
+
+Unsparsify({'foo.0'=>'bar','foo.1'=>'baz','foo.2'=>'buz'}, sparse_array: true)
+#=> {'foo' => ['bar','baz','buz']}
 ```
 
 ## Contributing
