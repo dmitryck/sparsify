@@ -4,6 +4,10 @@ Convert a deeply-nested hash into a shallow sparse hash. Useful for tools that
 either can't handle deeply-nested hashes or that allow partial updates via
 sparse hashes.
 
+This gem is our internal implementation of our [Sparisfy Challenge][].
+
+[Sparsify Challenge]: https://github.com/simplymeasured/sparsify-challenge
+
 ## Usage
 
 ```ruby
