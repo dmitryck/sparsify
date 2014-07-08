@@ -130,47 +130,25 @@ module Sparsify
 
     private
 
-    # Utility method for backslash-escaping a string
-    # @param str [String]
-    # @param separator [String] single-character string
-    # @return [String]
-    def escape(str, separator)
-      pattern = /(\\|#{Regexp.escape(separator)})/
-      str.gsub(pattern, '\\\\\1')
-    end
-
-    # Utility method for removing backslash-escaping from a string
-    # @param str [String]
-    # @param separator [String] single-character string
-    # @return [String]
-    def unescape(str, separator)
-      pattern = /\\(\\|#{Regexp.escape(separator)})/
-      str.gsub(pattern, '\1')
-    end
-
     # Utility method for splitting a string by a separator into
     # non-escaped parts
+    # @api private
     # @param str [String]
     # @param separator [String] single-character string
     # @return [Array<String>]
     def escaped_split(str, separator)
-      unescaped_separator = /(?<!\\)(#{Regexp.escape(separator)})/
-      # String#split(<Regexp>) on non zero-width matches yields the match
-      # as the even entries in the array.
-      parts = str.split(unescaped_separator).each_slice(2).map(&:first)
-      parts.map do |part|
-        unescape(part, separator)
-      end
+      Separator[separator].split(str)
     end
 
     # Utility method for joining a pre-escaped string with a not-yet escaped
     # string on a given separator, escaping the new part before joining.
+    # @api private
     # @param pre_escaped_prefix [String]
     # @param new_part [String] - will be escaped before joining
     # @param separator [String] single-character string
     # @return [String]
     def escaped_join(pre_escaped_prefix, new_part, separator)
-      [pre_escaped_prefix, escape(new_part, separator)].compact.join(separator)
+      Separator[separator].join(pre_escaped_prefix, new_part)
     end
   end
 

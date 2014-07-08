@@ -3,6 +3,7 @@
 require 'sparsify/version'
 require 'sparsify/utility_methods'
 require 'sparsify/guard_methods'
+require 'sparsify/separator'
 require 'sparsify/core_ext/kernel'
 
 # Provides sparse-key access to a Hash.
