@@ -1,10 +1,14 @@
 # encoding: utf-8
 
+require 'sparsify/deprecations'
+
 module Sparsify
   # Container for a separator and functionality for splitting &
   # joining with proper escaping.
   # @api private
   class Separator
+    include Deprecations
+
     @separators = {}
 
     # Returns a memoized Separator object for the given separator_character
@@ -20,10 +24,11 @@ module Sparsify
 
     # @param separator [String] single-character string
     def initialize(separator)
-      unless separator.kind_of?(String) && separator.size == 1
-        fail ArgumentError, "separator must be a single-character String, " +
+      unless separator.kind_of?(String) && separator.size > 0
+        fail ArgumentError, "separator must be a non-empty String " +
                             "got #{separator.inspect}"
       end
+      deprecate('multi-character separator', '2.0') unless separator.size == 1
       @separator = separator
     end
 

@@ -50,6 +50,11 @@ describe 'Sparsify' do
       end
       it { should eq nested_hash }
     end
+    context 'deprecated multi-character separators (remove in 2.0)' do
+      it 'only escapes the first character in the separator'
+      it 'round-trips ok'
+      it 'warns appropriately'
+    end
   end
 
   context 'sparse_array' do
