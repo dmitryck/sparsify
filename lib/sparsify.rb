@@ -75,8 +75,8 @@ module Sparsify
   # @overload sparse_get(sparse_key, options = {})
   #   @param options (see #sparse)
   #   @return [Object] at that address or nil if none found
-  def sparse_fetch(*args, &block)
-    Sparsify.sparse_fetch(self, *args, &block)
+  def sparse_get(*args)
+    Sparsify.sparse_get(self, *args)
   end
 
   # Returns a deeply-nested hash version of self.
