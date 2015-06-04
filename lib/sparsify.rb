@@ -40,7 +40,7 @@ module Sparsify
   # Used internally by both Sparsify::Utility#sparse and
   # Sparsify::Utility#unsparse
   #
-  # @overload sparse_eachrm (options = {}, &block)
+  # @overload sparse_each(options = {}, &block)
   #   Yields once per key in sparse version of itself.
   #   @param options (see #sparse)
   #   @yieldparam [(sparse_key,value)]
