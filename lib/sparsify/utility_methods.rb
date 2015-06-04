@@ -128,6 +128,50 @@ module Sparsify
       sparse_fetch(hsh, sparse_key, options) { nil }
     end
 
+    # Given a sparse hash, unsparsify a subset by address, returning
+    # a *modified copy* of the original sparse hash.
+    #
+    # @overload expand(sparse_hsh, sparse_key, options = {}, &block)
+    #   @param sparse_hsh [Hash{String=>Object}]
+    #   @param sparse_key [String]
+    #   @param options (see Sparsify::UtilityMethods#sparse)
+    #   @return [Object]
+    #
+    # @example
+    # ~~~ ruby
+    # sparse = {'a.b' => 2, 'a.c.d' => 4, 'a.c.e' => 3, 'b.f' => 4}
+    # Sparsify::expand(sparse, 'a.c')
+    # # => {'a.b' => 2, 'a.c' => {'d' => 4, 'e' => 3}, 'b.f' => 4}
+    # ~~~
+    def expand(sparse_hsh, sparse_key, *args)
+      # if sparse_hsh includes our key, its value is already expanded.
+      return sparse_hsh if sparse_hsh.include?(sparse_key)
+
+      options = (args.last.kind_of?(Hash) ? args.pop : {})
+      separator = options.fetch(:separator, DEFAULT_SEPARATOR)
+      pattern = /\A#{Regexp.escape(sparse_key)}#{Regexp.escape(separator)}/i
+
+      match = {}
+      unmatch = {}
+      sparse_hsh.each do |k, v|
+        if pattern =~ k
+          sk = k.gsub(pattern, '')
+          match[sk] = v
+        else
+          unmatch[k] = v
+        end
+      end
+
+      unmatch.update(sparse_key => unsparse(match, options)) unless match.empty?
+      unmatch
+    end
+
+    # Given a sparse hash, unsparsify a subset by address *in place*
+    # (@see Sparsify::UtilityMethods#expand)
+    def expand!(sparse_hsh, *args)
+      sparse_hsh.replace expand(sparse_hsh, *args)
+    end
+
     private
 
     # Utility method for splitting a string by a separator into

@@ -2,6 +2,7 @@
 
 ## v1.1.0 (TBD)
 
+ - Added Sparsify::expand(), which expands a subset of the given sparse hash (@yaauie)
  - Fixed extraneous characters in documentation (@yaauie)
  - Actually provided Sparsify#sparse_get to line up with documentation (@yaauie)
 

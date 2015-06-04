@@ -199,4 +199,51 @@ describe 'Sparsify' do
       end
     end
   end
+
+  shared_examples_for('.expand') do
+    let(:source_sparse_hash) do
+      {
+        'foo.bar.baz' => 'bingo',
+        'foo.bar.whee' => {},
+        'asdf' => 'qwer',
+      }
+    end
+    let(:sparse_key) { 'foo.bar' }
+    let(:expander) { proc { Sparsify.send(method, source_sparse_hash, sparse_key) } }
+    let(:the_result) { expander.call }
+
+    it 'expands the item at the address' do
+      expect(the_result).to eq({'foo.bar' => {'baz'=>'bingo', 'whee'=> {}},'asdf'=>'qwer'})
+    end
+    context 'when no item exists at the address' do
+      let(:sparse_key) { 'qwer' }
+      it 'is a no-op' do
+        expect(the_result).to eq(source_sparse_hash)
+      end
+    end
+    context 'when an object exists at the address exactly' do
+      let(:sparse_key) { 'foo.bar.baz' }
+      it 'is a no-op' do
+        expect(the_result).to eq(source_sparse_hash)
+      end
+    end
+  end
+
+  context '.expand' do
+    let(:method) { :expand }
+    include_examples('.expand') do
+      it 'does not modify the original' do
+        expect(the_result).to_not equal(source_sparse_hash)
+      end
+    end
+  end
+
+  context '.expand!' do
+    let(:method) { :expand! }
+    include_examples('.expand') do
+      it 'modifies the original' do
+        expect(the_result).to equal(source_sparse_hash)
+      end
+    end
+  end
 end
