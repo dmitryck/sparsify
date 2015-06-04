@@ -1,6 +1,6 @@
 # Changelog
 
-## v1.1.0 (TBD)
+## v1.1.0 (2015-06-04)
 
  - Added Sparsify::expand(), which expands a subset of the given sparse hash (@yaauie)
  - Fixed extraneous characters in documentation (@yaauie)
